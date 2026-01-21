@@ -1,195 +1,46 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
 
-<title>Mini Life App</title>
+    /* Thanh menu trên cùng */
+    .navbar {
+      display: flex;
+      justify-content: center;   /* căn giữa */
+      background-color: #333;
+      padding: 10px 0;
+    }
 
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(135deg, #FFE6F0, #FFF6CC);
-  min-height: 100vh;
-}
+    /* Nút */
+    .navbar button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-/* ===== TOP NAV ===== */
-#topNav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 10px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 1000;
-}
-
-#topNav button {
-  border: none;
-  background: none;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-#topNav span {
-  display: block;
-  font-size: 18px;
-}
-
-/* ===== CONTENT ===== */
-#content {
-  padding-top: 70px;
-  display: flex;
-  justify-content: center;
-}
-
-.screen {
-  background: #fff;
-  width: 94%;
-  max-width: 430px;
-  padding: 22px;
-  border-radius: 20px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
-  text-align: center;
-  display: none;
-}
-
-h3 {
-  margin: 10px 0;
-}
-
-button {
-  padding: 12px;
-  margin: 6px;
-  border-radius: 14px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-  background: linear-gradient(135deg, #FFB6D5, #FFD6E8);
-}
-
-input {
-  width: 88%;
-  padding: 11px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-}
-
-/* ===== GAME ===== */
-#answers button { width: 90%; }
-#timer { color: #FF6F91; font-weight: bold; }
-#score { color: #4CAF50; font-weight: bold; }
-</style>
+    .navbar button:hover {
+      background-color: #555;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- ===== TOP MENU ===== -->
-<div id="topNav">
-  <button onclick="show('home')"><span>🏠</span>Home</button>
-  <button onclick="show('login')"><span>📘</span>Anh</button>
-  <button onclick="show('food')"><span>🍜</span>Ăn</button>
-  <button onclick="show('travel')"><span>🚢</span>Du lịch</button>
-  <button onclick="show('memory')"><span>💖</span>Kỉ niệm</button>
-</div>
-
-<div id="content">
-
-  <!-- HOME -->
-  <div id="home" class="screen" style="display:block;">
-    <h3>🏠 Home</h3>
-    <p>Chọn mục ở thanh trên để bắt đầu</p>
+  <div class="navbar">
+    <button>Home</button>
+    <button>About</button>
+    <button>Services</button>
+    <button>Contact</button>
   </div>
-
-  <!-- LOGIN -->
-  <div id="login" class="screen">
-    <h3>🎮 English Game</h3>
-    <input id="playerName" placeholder="Nhập tên">
-    <br><br>
-    <button onclick="startGame()">Bắt đầu</button>
-  </div>
-
-  <!-- GAME -->
-  <div id="game" class="screen">
-    <h3 id="welcome"></h3>
-
-    <button onclick="setMode('quiz')">Trắc nghiệm</button>
-    <button onclick="setMode('text')">Tự luận</button>
-
-    <div id="timer">⏱️ 10</div>
-    <h3 id="question"></h3>
-
-    <div id="answers"></div>
-
-    <div id="textBox" style="display:none;">
-      <input id="textInput" placeholder="Nhập đáp án">
-      <button onclick="checkText()">OK</button>
-    </div>
-
-    <h3>Điểm: <span id="score">0</span></h3>
-  </div>
-
-  <!-- FOOD -->
-  <div id="food" class="screen">
-    <h3>🍜 Ăn</h3>
-    <p>Từ vựng món ăn, giá tiền</p>
-  </div>
-
-  <!-- TRAVEL -->
-  <div id="travel" class="screen">
-    <h3>🚢 Du lịch</h3>
-    <p>Từ vựng cruise, hotel, itinerary</p>
-  </div>
-
-  <!-- MEMORY -->
-  <div id="memory" class="screen">
-    <h3>💖 Kỉ niệm</h3>
-    <p>Lưu từ yêu thích, câu hay</p>
-  </div>
-
-</div>
-
-<script>
-const screens = ["home","login","game","food","travel","memory"];
-function show(id){
-  screens.forEach(s=>{
-    document.getElementById(s).style.display = s===id?"block":"none";
-  });
-}
-
-/* ===== GAME SIMPLE ===== */
-let score = 0;
-let mode = "quiz";
-let direction = true;
-
-function startGame(){
-  if(!playerName.value.trim()) return alert("Nhập tên");
-  welcome.innerText = "Xin chào, " + playerName.value;
-  show("game");
-  nextQuestion();
-}
-
-function setMode(m){ mode = m; nextQuestion(); }
-
-function nextQuestion(){
-  direction = !direction;
-  question.innerText = direction ? "con mèo" : "cat";
-}
-
-function checkText(){
-  score++;
-  scoreEl.innerText = score;
-  nextQuestion();
-}
-
-const scoreEl = document.getElementById("score");
-</script>
 
 </body>
 </html>
