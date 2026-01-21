@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>English Learning Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>Mini Life App</title>
 
 <style>
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
   font-family: "Segoe UI", Arial, sans-serif;
   background: linear-gradient(135deg, #FFE6F0, #FFF6CC);
   min-height: 100vh;
@@ -15,18 +21,43 @@ body {
   align-items: center;
 }
 
-#login, #game {
-  background: #ffffff;
+/* ===== CARD ===== */
+.screen {
+  background: #fff;
   width: 94%;
   max-width: 430px;
   padding: 22px;
-  border-radius: 18px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
   text-align: center;
+  display: none;
 }
 
-h3,h4 { margin: 8px 0; color: #333; }
+h2, h3 {
+  margin: 10px 0;
+  color: #333;
+}
 
+/* ===== BUTTON ===== */
+button {
+  padding: 12px;
+  margin: 6px;
+  border-radius: 14px;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FFB6D5, #FFD6E8);
+}
+
+button:active { transform: scale(0.95); }
+
+.bigBtn {
+  width: 92%;
+  padding: 16px;
+  font-size: 17px;
+}
+
+/* ===== INPUT ===== */
 input {
   width: 88%;
   padding: 11px;
@@ -35,81 +66,58 @@ input {
   font-size: 15px;
 }
 
-button {
-  padding: 11px 15px;
-  margin: 4px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-  background: linear-gradient(135deg, #FFB6D5, #FFD6E8);
-}
-button:active { transform: scale(0.95); }
-
+/* ===== GAME ===== */
 #answers button { width: 90%; }
+#timer { color: #FF6F91; font-weight: bold; }
+#score { color: #4CAF50; font-weight: bold; }
 
-#rating button:nth-child(2){background:#C8F7DC;}
-#rating button:nth-child(3){background:#E6F2FF;}
-#rating button:nth-child(4){background:#FFE0B2;}
-#rating button:nth-child(5){background:#FFCDD2;}
-
-#timer { font-weight:bold; color:#FF6F91; }
-#score { color:#4CAF50; font-weight:bold; }
-
-#searchBox { margin:10px 0; }
-#searchResult {
-  font-size:13px;
-  text-align:left;
-  max-height:90px;
-  overflow:auto;
-  border-top:1px dashed #eee;
-  padding-top:5px;
+/* ===== SEARCH ===== */
+#searchBox { margin: 10px 0; }
+#suggestBox {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  max-height: 120px;
+  overflow: auto;
+  text-align: left;
+  font-size: 13px;
 }
-
-#suggestBox{
-  background:#fff;
-  border:1px solid #eee;
-  border-radius:8px;
-  max-height:120px;
-  overflow:auto;
-  margin-top:5px;
-  text-align:left;
-  font-size:13px;
-}
-.suggestItem{
-  padding:6px 10px;
-  cursor:pointer;
-}
-.suggestItem:hover{
-  background:#FFF1F6;
-}
+.suggestItem { padding: 6px 10px; cursor: pointer; }
+.suggestItem:hover { background: #FFF1F6; }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div id="login">
+<!-- ===== HOME ===== -->
+<div id="home" class="screen" style="display:block;">
+  <h2>🏠 Home</h2>
+  <button class="bigBtn" onclick="openEnglish()">📘 Học tiếng Anh</button>
+  <button class="bigBtn" onclick="openFood()">🍜 Ăn</button>
+  <button class="bigBtn" onclick="openTravel()">🚢 Du lịch</button>
+  <button class="bigBtn" onclick="openMemory()">💖 Kỉ niệm</button>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="login" class="screen">
   <h3>🎮 English Game</h3>
   <input id="playerName" placeholder="Nhập tên">
   <br><br>
   <button onclick="startGame()">Bắt đầu</button>
+  <br><br>
+  <button onclick="backHome()">⬅ Home</button>
 </div>
 
-<!-- GAME -->
-<div id="game" style="display:none;">
+<!-- ===== GAME ===== -->
+<div id="game" class="screen">
   <h3 id="welcome"></h3>
 
   <button onclick="setMode('quiz')">Trắc nghiệm</button>
   <button onclick="setMode('text')">Tự luận</button>
 
-  <!-- SEARCH -->
   <div id="searchBox">
-    <input id="searchInput" 
-           placeholder="🔍 Tìm EN hoặc VI"
-           oninput="suggestWord()">
+    <input id="searchInput" placeholder="🔍 Tìm từ" oninput="suggestWord()">
     <button onclick="searchWord()">Tìm</button>
-
     <div id="suggestBox"></div>
     <div id="searchResult"></div>
   </div>
@@ -133,201 +141,126 @@ button:active { transform: scale(0.95); }
   </div>
 
   <h3>Điểm: <span id="score">0</span></h3>
+  <button onclick="backHome()">⬅ Home</button>
 </div>
 
-<!-- SOUND -->
+<!-- ===== FOOD ===== -->
+<div id="food" class="screen">
+  <h3>🍜 Ăn</h3>
+  <p>Flashcard món ăn, giá tiền, từ vựng</p>
+  <button onclick="backHome()">⬅ Home</button>
+</div>
+
+<!-- ===== TRAVEL ===== -->
+<div id="travel" class="screen">
+  <h3>🚢 Du lịch</h3>
+  <p>Từ vựng cruise, hotel, itinerary</p>
+  <button onclick="backHome()">⬅ Home</button>
+</div>
+
+<!-- ===== MEMORY ===== -->
+<div id="memory" class="screen">
+  <h3>💖 Kỉ niệm</h3>
+  <p>Lưu từ yêu thích, câu hay</p>
+  <button onclick="backHome()">⬅ Home</button>
+</div>
+
+<!-- ===== SOUND ===== -->
 <audio id="right" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
 <audio id="wrong" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
 <audio id="timeup" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
 <script>
-/* ===== DATA ===== */
+const screens = ["home","login","game","food","travel","memory"];
+const show = id => screens.forEach(s => document.getElementById(s).style.display = s===id?"block":"none");
+
+function backHome(){ show("home"); }
+function openEnglish(){ show("login"); }
+function openFood(){ show("food"); }
+function openTravel(){ show("travel"); }
+function openMemory(){ show("memory"); }
+
+/* ===== GAME LOGIC ===== */
 const SHEET_ID = "11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8";
 const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
 
-let words = [];
-let current = null;
-let score = 0;
-let mode = "quiz";
-let timer = null;
-let timeLeft = 10;
-let direction = true;
+let words=[], current=null, score=0, mode="quiz", timer=null, timeLeft=10, direction=true;
 
-/* Load Google Sheet */
-function loadData(){
-  fetch(URL)
-    .then(r => r.json())
-    .then(data => {
-      words = data.map(r => ({
-        en: r.EN || "",
-        vi: r.VI || "",
-        weight: 1
-      }));
-    });
-}
-loadData();
-setInterval(loadData, 60000);
+fetch(URL).then(r=>r.json()).then(d=>{
+  words = d.map(x=>({en:x.EN, vi:x.VI, weight:1}));
+});
 
-/* Start */
 function startGame(){
   if(!playerName.value.trim()) return alert("Nhập tên");
-  login.style.display = "none";
-  game.style.display = "block";
   welcome.innerText = "Xin chào, " + playerName.value;
+  show("game");
   nextQuestion();
 }
 
-/* Mode */
-function setMode(m){
-  mode = m;
-  nextQuestion();
-}
+function setMode(m){ mode=m; nextQuestion(); }
 
-/* Pick word (Spaced) */
 function pickWord(){
-  let total = words.reduce((s,w)=>s+w.weight,0);
-  let r = Math.random() * total;
-  for(let w of words){
-    r -= w.weight;
-    if(r <= 0) return w;
-  }
-  return words[0];
+  let t = words.reduce((s,w)=>s+w.weight,0), r=Math.random()*t;
+  for(let w of words){ if((r-=w.weight)<=0) return w; }
 }
 
-/* Timer */
 function startTimer(){
   clearInterval(timer);
-  timeLeft = 10;
-  timerEl.innerText = "⏱️ " + timeLeft;
-
-  timer = setInterval(()=>{
-    timeLeft--;
-    timerEl.innerText = "⏱️ " + timeLeft;
-    if(timeLeft <= 0){
+  timeLeft=10; timerEl.innerText="⏱️ "+timeLeft;
+  timer=setInterval(()=>{
+    timerEl.innerText="⏱️ "+(--timeLeft);
+    if(timeLeft<=0){
       clearInterval(timer);
       play(timeup);
-      score = Math.max(0, score - 1);
-      scoreEl.innerText = score;
-      current.weight += 2;
-      rating.style.display = "block";
+      score=Math.max(0,score-1);
+      scoreEl.innerText=score;
+      rating.style.display="block";
     }
   },1000);
 }
 
-/* Next */
 function nextQuestion(){
-  if(!words.length) return;
-
-  rating.style.display = "none";
-  answers.innerHTML = "";
-  textInput.value = "";
-
-  current = pickWord();
-  direction = Math.random() > 0.5;
-
-  question.innerText = direction ? current.vi : current.en;
-
-  if(mode === "quiz"){
-    textBox.style.display = "none";
-    answers.style.display = "block";
-    createChoices();
-  } else {
-    answers.style.display = "none";
-    textBox.style.display = "block";
-  }
-
+  rating.style.display="none";
+  answers.innerHTML="";
+  textInput.value="";
+  current=pickWord();
+  direction=Math.random()>0.5;
+  question.innerText=direction?current.vi:current.en;
+  mode==="quiz"?(createChoices(),textBox.style.display="none"):(answers.style.display="none",textBox.style.display="block");
   startTimer();
 }
 
-/* Choices */
 function createChoices(){
-  const list = [...words].sort(()=>0.5-Math.random()).slice(0,3);
-  if(!list.includes(current)) list[0] = current;
-
+  answers.style.display="block";
+  const list=[...words].sort(()=>0.5-Math.random()).slice(0,3);
+  if(!list.includes(current)) list[0]=current;
   list.forEach(w=>{
-    const btn = document.createElement("button");
-    btn.innerText = direction ? w.en : w.vi;
-    btn.onclick = ()=> checkAnswer(btn.innerText);
-    answers.appendChild(btn);
+    const b=document.createElement("button");
+    b.innerText=direction?w.en:w.vi;
+    b.onclick=()=>checkAnswer(b.innerText);
+    answers.appendChild(b);
   });
 }
 
-/* Check */
-function checkAnswer(value){
+function checkAnswer(v){
   clearInterval(timer);
-  const correct = direction ? current.en : current.vi;
-
-  if(value.trim().toLowerCase() === correct.trim().toLowerCase()){
-    play(right);
-    score++;
-    current.weight = Math.max(1, current.weight - 1);
+  const c=direction?current.en:current.vi;
+  if(v.trim().toLowerCase()===c.toLowerCase()){
+    play(right); score++;
   } else {
-    play(wrong);
-    score = Math.max(0, score - 1);
-    current.weight += 2;
+    play(wrong); score=Math.max(0,score-1);
   }
-  scoreEl.innerText = score;
-  rating.style.display = "block";
+  scoreEl.innerText=score;
+  rating.style.display="block";
 }
 
-/* Text */
-function checkText(){
-  checkAnswer(textInput.value);
-}
+function checkText(){ checkAnswer(textInput.value); }
+function rate(){ nextQuestion(); }
 
-/* Rate */
-function rate(level){
-  if(level==="easy") current.weight=Math.max(1,current.weight-2);
-  if(level==="good") current.weight=Math.max(1,current.weight-1);
-  if(level==="hard") current.weight+=2;
-  if(level==="extreme") current.weight+=4;
-  nextQuestion();
-}
-
-/* 🔍 Search */
-function searchWord(){
-  const key = searchInput.value.trim().toLowerCase();
-  if(!key) return;
-
-  const result = words.filter(w =>
-    w.en.toLowerCase().startsWith(key) ||
-    w.vi.toLowerCase().startsWith(key)
-  );
-
-  searchResult.innerHTML = result.length
-    ? result.slice(0,10).map(w=>`• ${w.en} → ${w.vi}`).join("<br>")
-    : "❌ Không tìm thấy";
-}
-
-/* ✨ Suggest (startsWith) */
-function suggestWord(){
-  const key = searchInput.value.trim().toLowerCase();
-  suggestBox.innerHTML = "";
-  if(key.length < 1) return;
-
-  const list = words.filter(w =>
-    w.en.toLowerCase().startsWith(key) ||
-    w.vi.toLowerCase().startsWith(key)
-  ).slice(0,8);
-
-  list.forEach(w=>{
-    const div = document.createElement("div");
-    div.className = "suggestItem";
-    div.innerText = `${w.en} → ${w.vi}`;
-    div.onclick = ()=>{
-      searchInput.value = w.en;
-      searchResult.innerHTML = `✅ ${w.en} → ${w.vi}`;
-      suggestBox.innerHTML = "";
-    };
-    suggestBox.appendChild(div);
-  });
-}
-
-/* Sound */
 function play(s){ s.currentTime=0; s.play(); }
 
-const timerEl = document.getElementById("timer");
-const scoreEl = document.getElementById("score");
+const timerEl=document.getElementById("timer");
+const scoreEl=document.getElementById("score");
 </script>
 
 </body>
