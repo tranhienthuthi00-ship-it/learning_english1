@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>English Learning Game</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #FFE6F0, #FFF6CC);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#login, #game {
+  background: #ffffff;
+  width: 94%;
+  max-width: 430px;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+h3,h4 { margin: 8px 0; color: #333; }
+
+input {
+  width: 88%;
+  padding: 11px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+button {
+  padding: 11px 15px;
+  margin: 4px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #FFB6D5, #FFD6E8);
+}
+button:active { transform: scale(0.95); }
+
+#answers button { width: 90%; }
+
+#rating button:nth-child(2){background:#C8F7DC;}
+#rating button:nth-child(3){background:#E6F2FF;}
+#rating button:nth-child(4){background:#FFE0B2;}
+#rating button:nth-child(5){background:#FFCDD2;}
+
+#timer { font-weight:bold; color:#FF6F91; }
+#score { color:#4CAF50; font-weight:bold; }
+
+#searchBox { margin:10px 0; }
+#searchResult {
+  font-size:13px;
+  text-align:left;
+  max-height:90px;
+  overflow:auto;
+  border-top:1px dashed #eee;
+  padding-top:5px;
+}
+
+#suggestBox{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:8px;
+  max-height:120px;
+  overflow:auto;
+  margin-top:5px;
+  text-align:left;
+  font-size:13px;
+}
+.suggestItem{
+  padding:6px 10px;
+  cursor:pointer;
+}
+.suggestItem:hover{
+  background:#FFF1F6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <h3>🎮 English Game</h3>
+  <input id="playerName" placeholder="Nhập tên">
+  <br><br>
+  <button onclick="startGame()">Bắt đầu</button>
+</div>
+
+<!-- GAME -->
+<div id="game" style="display:none;">
+  <h3 id="welcome"></h3>
+
+  <button onclick="setMode('quiz')">Trắc nghiệm</button>
+  <button onclick="setMode('text')">Tự luận</button>
+
+  <!-- SEARCH -->
+  <div id="searchBox">
+    <input id="searchInput" 
+           placeholder="🔍 Tìm EN hoặc VI"
+           oninput="suggestWord()">
+    <button onclick="searchWord()">Tìm</button>
+
+    <div id="suggestBox"></div>
+    <div id="searchResult"></div>
+  </div>
+
+  <div id="timer">⏱️ 10</div>
+  <h3 id="question"></h3>
+
+  <div id="answers"></div>
+
+  <div id="textBox" style="display:none;">
+    <input id="textInput" placeholder="Nhập đáp án">
+    <button onclick="checkText()">OK</button>
+  </div>
+
+  <div id="rating" style="display:none;">
+    <h4>Độ khó?</h4>
+    <button onclick="rate('easy')">😄 Dễ</button>
+    <button onclick="rate('good')">🙂 Good</button>
+    <button onclick="rate('hard')">😐 Khó</button>
+    <button onclick="rate('extreme')">🔥 Cực khó</button>
+  </div>
+
+  <h3>Điểm: <span id="score">0</span></h3>
+</div>
+
+<!-- SOUND -->
+<audio id="right" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+<audio id="wrong" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+<audio id="timeup" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+/* ===== DATA ===== */
+const SHEET_ID = "11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8";
+const URL = `https://opensheet.elk.sh/${SHEET_ID}/Sheet1`;
+
+let words = [];
+let current = null;
+let score = 0;
+let mode = "quiz";
+let timer = null;
+let timeLeft = 10;
+let direction = true;
+
+/* Load Google Sheet */
+function loadData(){
+  fetch(URL)
+    .then(r => r.json())
+    .then(data => {
+      words = data.map(r => ({
+        en: r.EN || "",
+        vi: r.VI || "",
+        weight: 1
+      }));
+    });
+}
+loadData();
+setInterval(loadData, 60000);
+
+/* Start */
+function startGame(){
+  if(!playerName.value.trim()) return alert("Nhập tên");
+  login.style.display = "none";
+  game.style.display = "block";
+  welcome.innerText = "Xin chào, " + playerName.value;
+  nextQuestion();
+}
+
+/* Mode */
+function setMode(m){
+  mode = m;
+  nextQuestion();
+}
+
+/* Pick word (Spaced) */
+function pickWord(){
+  let total = words.reduce((s,w)=>s+w.weight,0);
+  let r = Math.random() * total;
+  for(let w of words){
+    r -= w.weight;
+    if(r <= 0) return w;
+  }
+  return words[0];
+}
+
+/* Timer */
+function startTimer(){
+  clearInterval(timer);
+  timeLeft = 10;
+  timerEl.innerText = "⏱️ " + timeLeft;
+
+  timer = setInterval(()=>{
+    timeLeft--;
+    timerEl.innerText = "⏱️ " + timeLeft;
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      play(timeup);
+      score = Math.max(0, score - 1);
+      scoreEl.innerText = score;
+      current.weight += 2;
+      rating.style.display = "block";
+    }
+  },1000);
+}
+
+/* Next */
+function nextQuestion(){
+  if(!words.length) return;
+
+  rating.style.display = "none";
+  answers.innerHTML = "";
+  textInput.value = "";
+
+  current = pickWord();
+  direction = Math.random() > 0.5;
+
+  question.innerText = direction ? current.vi : current.en;
+
+  if(mode === "quiz"){
+    textBox.style.display = "none";
+    answers.style.display = "block";
+    createChoices();
+  } else {
+    answers.style.display = "none";
+    textBox.style.display = "block";
+  }
+
+  startTimer();
+}
+
+/* Choices */
+function createChoices(){
+  const list = [...words].sort(()=>0.5-Math.random()).slice(0,3);
+  if(!list.includes(current)) list[0] = current;
+
+  list.forEach(w=>{
+    const btn = document.createElement("button");
+    btn.innerText = direction ? w.en : w.vi;
+    btn.onclick = ()=> checkAnswer(btn.innerText);
+    answers.appendChild(btn);
+  });
+}
+
+/* Check */
+function checkAnswer(value){
+  clearInterval(timer);
+  const correct = direction ? current.en : current.vi;
+
+  if(value.trim().toLowerCase() === correct.trim().toLowerCase()){
+    play(right);
+    score++;
+    current.weight = Math.max(1, current.weight - 1);
+  } else {
+    play(wrong);
+    score = Math.max(0, score - 1);
+    current.weight += 2;
+  }
+  scoreEl.innerText = score;
+  rating.style.display = "block";
+}
+
+/* Text */
+function checkText(){
+  checkAnswer(textInput.value);
+}
+
+/* Rate */
+function rate(level){
+  if(level==="easy") current.weight=Math.max(1,current.weight-2);
+  if(level==="good") current.weight=Math.max(1,current.weight-1);
+  if(level==="hard") current.weight+=2;
+  if(level==="extreme") current.weight+=4;
+  nextQuestion();
+}
+
+/* 🔍 Search */
+function searchWord(){
+  const key = searchInput.value.trim().toLowerCase();
+  if(!key) return;
+
+  const result = words.filter(w =>
+    w.en.toLowerCase().startsWith(key) ||
+    w.vi.toLowerCase().startsWith(key)
+  );
+
+  searchResult.innerHTML = result.length
+    ? result.slice(0,10).map(w=>`• ${w.en} → ${w.vi}`).join("<br>")
+    : "❌ Không tìm thấy";
+}
+
+/* ✨ Suggest (startsWith) */
+function suggestWord(){
+  const key = searchInput.value.trim().toLowerCase();
+  suggestBox.innerHTML = "";
+  if(key.length < 1) return;
+
+  const list = words.filter(w =>
+    w.en.toLowerCase().startsWith(key) ||
+    w.vi.toLowerCase().startsWith(key)
+  ).slice(0,8);
+
+  list.forEach(w=>{
+    const div = document.createElement("div");
+    div.className = "suggestItem";
+    div.innerText = `${w.en} → ${w.vi}`;
+    div.onclick = ()=>{
+      searchInput.value = w.en;
+      searchResult.innerHTML = `✅ ${w.en} → ${w.vi}`;
+      suggestBox.innerHTML = "";
+    };
+    suggestBox.appendChild(div);
+  });
+}
+
+/* Sound */
+function play(s){ s.currentTime=0; s.play(); }
+
+const timerEl = document.getElementById("timer");
+const scoreEl = document.getElementById("score");
+</script>
+
+</body>
+</html>
