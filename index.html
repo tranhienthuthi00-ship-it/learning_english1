@@ -155,7 +155,13 @@ main{padding:60px 40px;text-align:center}
   margin:12px 0;border-radius:18px;
   cursor:pointer;
 }
+.dict-type{
+  font-size:12px;
+  color:#f49ac2;
+  margin-top:4px;
+}
 .dict-example{font-style:italic;font-size:13px;color:#666}
+.hl-word{color:#f49ac2;font-weight:600}
 
 /* STATS */
 .stats{
@@ -286,8 +292,8 @@ function save(){
   updateStatsUI()
 }
 function updateStatsUI(){
-  document.getElementById("score").innerText=score
-  document.getElementById("lv").innerText=Math.floor(score/100)+1
+  score.innerText=score
+  lv.innerText=Math.floor(score/100)+1
 }
 if(currentUser) initUser(currentUser)
 
@@ -321,93 +327,112 @@ function markKnown(){
   save();nextFlash()
 }
 
-/* GAME */
-let cur
+/* ===== GAME ===== */
+let gameIndex=0
 function openGame(){
   englishContent.innerHTML=`
-  <div class="sub-tabs">
-    <button onclick="gameListen()">🔊 Listen</button>
-    <button onclick="gameType()">✍️ Type</button>
-    <button onclick="gameMatch()">🔀 Match</button>
-  </div>
-  <div id="gameArea"></div>`
+    <div class="sub-tabs">
+      <button onclick="gameListen()">🔊 Listen</button>
+      <button onclick="gameType()">✍️ Type</button>
+    </div>
+    <div id="gameArea"></div>`
+  gameListen()
 }
+
+/* GAME LISTEN */
 function gameListen(){
-  const area=gameArea
-  cur=words[Math.random()*words.length|0]
-  let opts=[cur.VI]
+  const w=words[gameIndex]
+  if(!w)return
+  speak(w.EN)
+  const opts=[w.VI]
   while(opts.length<3){
-    let r=words[Math.random()*words.length|0].VI
+    const r=words[Math.random()*words.length|0].VI
     if(!opts.includes(r))opts.push(r)
   }
   opts.sort(()=>Math.random()-.5)
-  area.innerHTML=`
-  <button class="listen-btn" onclick="speak(cur.EN)">🔊</button>
-  ${opts.map(o=>`<div class="game-card" onclick="checkListen(this,'${o}')">${o}</div>`).join("")}
-  <div id="result"></div>`
-  speak(cur.EN)
-}
-function checkListen(el,a){
-  const ok=a===cur.VI
-  el.classList.add(ok?"correct":"wrong")
-  result.innerText=ok?"✅ Đúng":"❌ Sai"
-  if(ok&&!correct[cur.EN]){correct[cur.EN]=true;score+=10}
-  save();setTimeout(gameListen,900)
-}
-function gameType(){
-  cur=words[Math.random()*words.length|0]
   gameArea.innerHTML=`
-  <button class="listen-btn" onclick="speak(cur.EN)">🔊</button>
-  <input class="dict-search" placeholder="Gõ từ..."
-    onkeydown="if(event.key==='Enter')checkType(this)">
-  <div id="result"></div>`
-  speak(cur.EN)
+    <button class="listen-btn" onclick="speak('${w.EN}')">🔊</button>
+    ${opts.map(o=>`
+      <div class="game-card" onclick="checkListen(this,'${o}','${w.VI}')">${o}</div>`).join("")}
+    <div id="result"></div>`
 }
-function checkType(i){
-  const ok=i.value.trim().toLowerCase()===cur.EN.toLowerCase()
-  result.innerText=ok?"✅ Chính xác":"❌ "+cur.EN
-  if(ok&&!correct[cur.EN]){correct[cur.EN]=true;score+=10}
-  save();setTimeout(gameType,1000)
-}
-function gameMatch(){
-  cur=words[Math.random()*words.length|0]
-  let wrong
-  do{wrong=words[Math.random()*words.length|0]}while(wrong.EN===cur.EN)
-  const isOk=Math.random()>.5
-  gameArea.innerHTML=`
-  <div class="game-card" onclick="checkMatch(this,${isOk})">${cur.EN} – ${isOk?cur.VI:wrong.VI}</div>
-  <div class="game-card" onclick="checkMatch(this,${!isOk})">${cur.EN} – ${isOk?wrong.VI:cur.VI}</div>
-  <div id="result"></div>`
-}
-function checkMatch(el,ok){
-  el.classList.add(ok?"correct":"wrong")
-  result.innerText=ok?"✅ Chuẩn":"❌ Sai"
-  if(ok&&!correct[cur.EN]){correct[cur.EN]=true;score+=10}
-  save();setTimeout(gameMatch,900)
+function checkListen(el,c,a){
+  document.querySelectorAll('.game-card').forEach(x=>x.onclick=null)
+  const ok=c===a
+  el.classList.add(ok?'correct':'wrong')
+  result.innerText=ok?'✅ Đúng':'❌ Sai'
+  if(ok && !correct[words[gameIndex].EN]){
+    correct[words[gameIndex].EN]=true
+    score+=10
+  }
+  save()
+  setTimeout(()=>{
+    gameIndex=(gameIndex+1)%words.length
+    gameListen()
+  },1000)
 }
 
-/* DICT */
+/* GAME TYPE */
+function gameType(){
+  const w=words[gameIndex]
+  if(!w)return
+  speak(w.EN)
+  gameArea.innerHTML=`
+    <button class="listen-btn" onclick="speak('${w.EN}')">🔊</button>
+    <input class="dict-search" placeholder="Gõ từ tiếng Anh"
+      onkeydown="if(event.key==='Enter')checkType(this,'${w.EN}')">
+    <div id="result"></div>`
+}
+function checkType(input,a){
+  const ok=input.value.trim().toLowerCase()===a.toLowerCase()
+  result.innerText=ok?'✅ Chính xác':`❌ ${a}`
+  if(ok && !correct[a]){
+    correct[a]=true
+    score+=10
+  }
+  save()
+  setTimeout(()=>{
+    gameIndex=(gameIndex+1)%words.length
+    gameType()
+  },1200)
+}
+
+/* ===== DICTIONARY (ĐÃ SỬA) ===== */
 function openDict(){
   englishContent.innerHTML=`
-  <div class="dict-app">
-    <input class="dict-search" placeholder="Tìm từ..."
-      oninput="searchDict(this.value)">
-    <div id="dictList"></div>
-  </div>`
-  renderDict(words)
+    <div class="dict-app">
+      <input class="dict-search" placeholder="Tìm từ..." oninput="searchDict(this.value)">
+      <div id="dictList"></div>
+    </div>`
+  renderDict(words,"")
 }
-function renderDict(list){
-  dictList.innerHTML=list.map(w=>`
-  <div class="dict-card" onclick="speak('${w.EN}')">
-    <b>${w.EN}</b> – ${w.VI}
-    <div class="dict-example">${w.Example||""}</div>
-  </div>`).join("")
+
+function renderDict(list, key){
+  const k=key.toLowerCase()
+  dictList.innerHTML=list.map(w=>{
+    let ex=w.Example||""
+    if(ex && k){
+      const re=new RegExp(`(${k})`,"gi")
+      ex=ex.replace(re,`<span class="hl-word">$1</span>`)
+    }
+    return`
+      <div class="dict-card" data-en="${encodeURIComponent(w.EN)}">
+        <b>${w.EN}</b> – ${w.VI}
+        ${w.Type?`<div class="dict-type">${w.Type}</div>`:""}
+        <div class="dict-example">${ex}</div>
+      </div>`
+  }).join("")
+  document.querySelectorAll('.dict-card').forEach(c=>{
+    c.onclick=()=>speak(decodeURIComponent(c.dataset.en))
+  })
 }
+
 function searchDict(k){
   const key=k.toLowerCase()
-  renderDict(words.filter(w=>
+  const filtered=words.filter(w=>
     w.EN.toLowerCase().includes(key)||
-    w.VI.toLowerCase().includes(key)))
+    w.VI.toLowerCase().includes(key))
+  renderDict(filtered,k)
 }
 
 /* STATS */
