@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Marshmallow UI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trần Hiền Webside</title>
 
 <style>
 *{box-sizing:border-box;font-family:system-ui,sans-serif}
@@ -50,6 +51,11 @@ main{padding:60px 40px;text-align:center}
 .home-gif img{width:180px}
 
 /* SUB TABS */
+.sub-tabs{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
 .sub-tabs button{
   margin:8px;
   padding:10px 20px;
@@ -114,6 +120,81 @@ main{padding:60px 40px;text-align:center}
   max-width:420px;margin:40px auto;
   background:#fff;padding:24px;border-radius:22px;text-align:left;
 }
+
+/* ===== MOBILE ===== */
+@media (max-width:768px){
+
+  header{
+    padding:12px 16px;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  .logo{font-size:18px}
+
+  nav{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+  }
+
+  nav a{
+    margin:0;
+    font-size:13px;
+  }
+
+  .search-input{
+    width:40px;
+    height:36px;
+  }
+  .search-input.active{
+    width:100%;
+  }
+
+  main{
+    padding:32px 16px;
+  }
+
+  .home-gif{
+    margin:-20px 0 20px;
+  }
+  .home-gif img{
+    width:140px;
+  }
+
+  .flashcard{
+    width:100%;
+    min-height:200px;
+    font-size:22px;
+  }
+
+  .flash-example{
+    font-size:14px;
+  }
+
+  .flash-actions button{
+    padding:8px 16px;
+    font-size:14px;
+  }
+
+  .game-card{
+    font-size:14px;
+  }
+
+  .listen-btn{
+    width:52px;
+    height:52px;
+    font-size:22px;
+  }
+
+  .dict-search{
+    font-size:14px;
+  }
+
+  .stats{
+    font-size:14px;
+  }
+}
 </style>
 </head>
 
@@ -170,7 +251,6 @@ function showTab(id){
   document.querySelector(`nav a[data-tab="${id}"]`).classList.add('active')
 }
 
-/* DATA */
 const URL="https://opensheet.elk.sh/11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8/Sheet1"
 let words=[]
 let learned=JSON.parse(localStorage.getItem('learned')||'{}')
@@ -178,7 +258,6 @@ let correct=JSON.parse(localStorage.getItem('correct')||'{}')
 
 fetch(URL).then(r=>r.json()).then(d=>words=d)
 
-/* FLASHCARD */
 let fi=0,front=true
 function openFlash(){
   if(!words.length) return
@@ -198,7 +277,6 @@ function flip(){front=!front;openFlash()}
 function nextFlash(){fi=(fi+1)%words.length;front=true;openFlash()}
 function markKnown(){learned[words[fi].EN]=true;save();nextFlash()}
 
-/* GAME */
 let cur
 function openGame(){
   englishContent.innerHTML=`
@@ -210,7 +288,6 @@ function openGame(){
     <div id="gameArea"></div>`
 }
 
-/* LISTEN */
 function gameListen(){
   const area=document.getElementById('gameArea')
   cur=words[Math.floor(Math.random()*words.length)]
@@ -235,7 +312,6 @@ function checkListen(el,a){
   setTimeout(gameListen,900)
 }
 
-/* TYPE */
 function gameType(){
   const area=document.getElementById('gameArea')
   cur=words[Math.floor(Math.random()*words.length)]
@@ -255,7 +331,6 @@ function checkType(input){
   setTimeout(gameType,1000)
 }
 
-/* MATCH */
 function gameMatch(){
   const area=document.getElementById('gameArea')
   cur=words[Math.floor(Math.random()*words.length)]
@@ -279,7 +354,6 @@ function checkMatch(el,ok){
   setTimeout(gameMatch,900)
 }
 
-/* DICTIONARY */
 function openDict(){
   englishContent.innerHTML=`
     <div class="dict-app">
@@ -311,7 +385,6 @@ function highlight(t,k){
   return t.replace(new RegExp(`(${k})`,'gi'),'<span class="hl">$1</span>')
 }
 
-/* STATS */
 function openStats(){
   englishContent.innerHTML=`
     <div class="stats">
@@ -322,7 +395,6 @@ function openStats(){
     </div>`
 }
 
-/* UTILS */
 function save(){
   localStorage.setItem('learned',JSON.stringify(learned))
   localStorage.setItem('correct',JSON.stringify(correct))
