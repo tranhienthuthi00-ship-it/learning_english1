@@ -1,46 +1,339 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Home</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
+<meta charset="UTF-8">
+<title>Marshmallow UI</title>
 
-    /* Thanh menu trên cùng */
-    .navbar {
-      display: flex;
-      justify-content: center;   /* căn giữa */
-      background-color: #333;
-      padding: 10px 0;
-    }
+<style>
+*{box-sizing:border-box;font-family:system-ui,sans-serif}
+body{margin:0;background:#faf6ee;color:#222}
 
-    /* Nút */
-    .navbar button {
-      background: none;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-size: 16px;
-    }
+/* HEADER */
+header{
+  background:#f4efe5;
+  padding:16px 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{font-weight:700;font-size:22px}
 
-    .navbar button:hover {
-      background-color: #555;
-      border-radius: 4px;
-    }
-  </style>
+/* NAV */
+nav a{
+  margin:0 12px;
+  text-decoration:none;
+  color:#222;
+  font-size:14px;
+  cursor:pointer;
+  opacity:.5;
+}
+nav a.active{font-weight:700;opacity:1}
+
+/* SEARCH */
+.search-input{
+  width:44px;height:40px;border-radius:20px;border:none;
+  background:#f49ac2;color:white;padding:0 16px;
+  transition:.3s;outline:none
+}
+.search-input::placeholder{color:#fff}
+.search-input.active{width:260px}
+
+/* MAIN */
+main{padding:60px 40px;text-align:center}
+
+/* TAB */
+.tab{display:none}
+.tab.active{display:block}
+
+/* GIF */
+.home-gif{margin:-50px 0 50px;display:flex;justify-content:center}
+.home-gif img{width:180px}
+
+/* SUB TABS */
+.sub-tabs button{
+  margin:8px;
+  padding:10px 20px;
+  border-radius:22px;
+  border:none;
+  cursor:pointer;
+  background:#eee;
+  font-weight:600;
+}
+
+/* FLASHCARD */
+.flashcard{
+  width:440px;min-height:260px;margin:40px auto 20px;
+  background:#f49ac2;border-radius:26px;color:white;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;font-size:28px;cursor:pointer;padding:24px;
+  box-shadow:0 12px 26px rgba(0,0,0,.15);
+}
+.flash-example{font-size:16px;opacity:.9}
+
+/* FLASH BUTTONS */
+.flash-actions{display:flex;justify-content:center;gap:16px}
+.flash-actions button{
+  padding:10px 22px;border-radius:22px;border:none;
+  font-weight:600;cursor:pointer;
+}
+.skip{background:#ddd}
+.next{background:#f49ac2;color:white}
+
+/* GAME */
+.game-card{
+  background:#f1eddc;border-radius:18px;
+  padding:16px;margin:10px auto;
+  max-width:420px;cursor:pointer;
+}
+.game-card.correct{background:#b9f6ca}
+.game-card.wrong{background:#ffcdd2}
+.game-result{font-weight:700;margin:14px}
+.listen-btn{
+  width:60px;height:60px;border-radius:50%;
+  border:none;background:#f49ac2;color:white;
+  font-size:26px;cursor:pointer;margin:20px auto;
+}
+
+/* DICTIONARY */
+.dict-app{max-width:720px;margin:auto;text-align:left}
+.dict-search{
+  width:100%;padding:14px 18px;border-radius:22px;
+  border:none;outline:none;font-size:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.1);
+}
+.dict-card{
+  background:#fff;padding:14px;margin:12px 0;
+  border-radius:18px;cursor:pointer;
+}
+.dict-type{font-size:12px;font-weight:600;color:#f49ac2}
+.dict-example{font-style:italic;font-size:13px;color:#666}
+.hl{background:#fff2a8;padding:0 2px;border-radius:4px}
+
+/* STATS */
+.stats{
+  max-width:420px;margin:40px auto;
+  background:#fff;padding:24px;border-radius:22px;text-align:left;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="navbar">
-    <button>Home</button>
-    <button>About</button>
-    <button>Services</button>
-    <button>Contact</button>
+<header>
+  <div class="logo">🍡 Trần Hiền</div>
+  <nav>
+    <a data-tab="home" class="active" onclick="showTab('home')">Home</a>
+    <a data-tab="english" onclick="showTab('english')">English</a>
+    <a data-tab="journey" onclick="showTab('journey')">Journey</a>
+    <a data-tab="food" onclick="showTab('food')">Food place</a>
+  </nav>
+  <input id="searchInput" class="search-input"
+    placeholder="🔍︎ Tìm bài viết"
+    onfocus="this.classList.add('active')"
+    onblur="if(!this.value)this.classList.remove('active')">
+</header>
+
+<main>
+
+<section id="home" class="tab active">
+  <div class="home-gif"><img src="https://media4.giphy.com/media/10a1Cwco2kUtlS/giphy.gif"></div>
+</section>
+
+<section id="journey" class="tab">
+  <div class="home-gif"><img src="https://media0.giphy.com/media/kIRwx1dWD9cnuNe0NB/giphy.gif"></div>
+</section>
+
+<section id="food" class="tab">
+  <div class="home-gif"><img src="https://media3.giphy.com/media/7uLj32hcCziZq2rr5K/giphy.gif"></div>
+</section>
+
+<section id="english" class="tab">
+  <div class="home-gif"><img src="https://media0.giphy.com/media/HiKpToupuCj9UwQkWP/giphy.gif"></div>
+
+  <div class="sub-tabs">
+    <button onclick="openFlash()">Flashcard</button>
+    <button onclick="openGame()">Game</button>
+    <button onclick="openDict()">Dictionary</button>
+    <button onclick="openStats()">Stats</button>
   </div>
+
+  <div id="englishContent">✨ Chọn chế độ học</div>
+</section>
+
+</main>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
+  document.getElementById(id).classList.add('active')
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'))
+  document.querySelector(`nav a[data-tab="${id}"]`).classList.add('active')
+}
+
+/* DATA */
+const URL="https://opensheet.elk.sh/11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8/Sheet1"
+let words=[]
+let learned=JSON.parse(localStorage.getItem('learned')||'{}')
+let correct=JSON.parse(localStorage.getItem('correct')||'{}')
+
+fetch(URL).then(r=>r.json()).then(d=>words=d)
+
+/* FLASHCARD */
+let fi=0,front=true
+function openFlash(){
+  if(!words.length) return
+  const w=words[fi]
+  englishContent.innerHTML=`
+    <div class="flashcard" onclick="flip()">
+      ${front?w.EN:w.VI}
+      ${!front&&w.Example?`<div class="flash-example">${w.Example}</div>`:""}
+    </div>
+    <div class="flash-actions">
+      <button class="skip" onclick="markKnown()">Đã biết</button>
+      <button class="next" onclick="nextFlash()">Next</button>
+    </div>`
+  speak(w.EN)
+}
+function flip(){front=!front;openFlash()}
+function nextFlash(){fi=(fi+1)%words.length;front=true;openFlash()}
+function markKnown(){learned[words[fi].EN]=true;save();nextFlash()}
+
+/* GAME */
+let cur
+function openGame(){
+  englishContent.innerHTML=`
+    <div class="sub-tabs">
+      <button onclick="gameListen()">🔊 Listen</button>
+      <button onclick="gameType()">✍️ Type</button>
+      <button onclick="gameMatch()">🔀 Match</button>
+    </div>
+    <div id="gameArea"></div>`
+}
+
+/* LISTEN */
+function gameListen(){
+  const area=document.getElementById('gameArea')
+  cur=words[Math.floor(Math.random()*words.length)]
+  let opts=[cur.VI]
+  while(opts.length<3){
+    let r=words[Math.floor(Math.random()*words.length)].VI
+    if(!opts.includes(r)) opts.push(r)
+  }
+  opts.sort(()=>Math.random()-0.5)
+  area.innerHTML=`
+    <button class="listen-btn" onclick="speak(cur.EN)">🔊</button>
+    ${opts.map(o=>`<div class="game-card" onclick="checkListen(this,'${o.replace(/'/g,"")}')">${o}</div>`).join('')}
+    <div id="result"></div>`
+  speak(cur.EN)
+}
+function checkListen(el,a){
+  const ok=a===cur.VI
+  el.classList.add(ok?'correct':'wrong')
+  document.getElementById('result').innerText=ok?'✅ Đúng':'❌ Sai'
+  if(ok) correct[cur.EN]=true
+  save()
+  setTimeout(gameListen,900)
+}
+
+/* TYPE */
+function gameType(){
+  const area=document.getElementById('gameArea')
+  cur=words[Math.floor(Math.random()*words.length)]
+  area.innerHTML=`
+    <button class="listen-btn" onclick="speak(cur.EN)">🔊</button>
+    <input class="dict-search" placeholder="Gõ từ bạn nghe..."
+      onkeydown="if(event.key==='Enter')checkType(this)">
+    <div id="result"></div>`
+  speak(cur.EN)
+}
+function checkType(input){
+  const ok=input.value.trim().toLowerCase()===cur.EN.toLowerCase()
+  document.getElementById('result').innerText=
+    ok?'✅ Chính xác':'❌ Đáp án: '+cur.EN
+  if(ok) correct[cur.EN]=true
+  save()
+  setTimeout(gameType,1000)
+}
+
+/* MATCH */
+function gameMatch(){
+  const area=document.getElementById('gameArea')
+  cur=words[Math.floor(Math.random()*words.length)]
+  let wrong
+  do{wrong=words[Math.floor(Math.random()*words.length)]}while(wrong.EN===cur.EN)
+  const isCorrect=Math.random()>0.5
+  area.innerHTML=`
+    <div class="game-card" onclick="checkMatch(this,${isCorrect})">
+      ${cur.EN} – ${isCorrect?cur.VI:wrong.VI}
+    </div>
+    <div class="game-card" onclick="checkMatch(this,${!isCorrect})">
+      ${cur.EN} – ${isCorrect?wrong.VI:cur.VI}
+    </div>
+    <div id="result"></div>`
+}
+function checkMatch(el,ok){
+  el.classList.add(ok?'correct':'wrong')
+  document.getElementById('result').innerText=ok?'✅ Chuẩn':'❌ Sai'
+  if(ok) correct[cur.EN]=true
+  save()
+  setTimeout(gameMatch,900)
+}
+
+/* DICTIONARY */
+function openDict(){
+  englishContent.innerHTML=`
+    <div class="dict-app">
+      <input class="dict-search" placeholder="Nhập từ cần tìm..."
+        oninput="searchDict(this.value)">
+      <div id="dictList"></div>
+    </div>`
+  renderDict(words,"")
+}
+function renderDict(list,k){
+  dictList.innerHTML=list.map(w=>`
+    <div class="dict-card" onclick="speak('${w.EN.replace(/'/g,"")}')">
+      <b>${w.EN}</b>
+      ${w.Type?` <span class="dict-type">(${w.Type})</span>`:""}
+      – ${w.VI}
+      <div class="dict-example">${highlight(w.Example||"",k)}</div>
+    </div>`).join('')
+}
+function searchDict(k){
+  const key=k.toLowerCase()
+  renderDict(words.filter(w=>
+    w.EN.toLowerCase().includes(key) ||
+    w.VI.toLowerCase().includes(key) ||
+    (w.Example||"").toLowerCase().includes(key)
+  ),k)
+}
+function highlight(t,k){
+  if(!k) return t
+  return t.replace(new RegExp(`(${k})`,'gi'),'<span class="hl">$1</span>')
+}
+
+/* STATS */
+function openStats(){
+  englishContent.innerHTML=`
+    <div class="stats">
+      <h3>📊 Thống kê</h3>
+      <p>Tổng từ: ${words.length}</p>
+      <p>Đã biết: ${Object.keys(learned).length}</p>
+      <p>Trả lời đúng: ${Object.keys(correct).length}</p>
+    </div>`
+}
+
+/* UTILS */
+function save(){
+  localStorage.setItem('learned',JSON.stringify(learned))
+  localStorage.setItem('correct',JSON.stringify(correct))
+}
+function speak(t){
+  speechSynthesis.cancel()
+  const u=new SpeechSynthesisUtterance(t)
+  u.lang="en-US"
+  speechSynthesis.speak(u)
+}
+</script>
 
 </body>
 </html>
