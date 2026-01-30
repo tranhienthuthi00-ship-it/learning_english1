@@ -2,190 +2,74 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marshmallow English</title>
 
 <style>
 *{box-sizing:border-box;font-family:system-ui,sans-serif}
 body{margin:0;background:#faf6ee;color:#222}
 
-/* AUTH */
-#authScreen{
-  position:fixed;inset:0;
-  background:#faf6ee;
-  display:flex;align-items:center;justify-content:center;
-  z-index:9999;
-}
-.auth-box{
-  background:#fff;
-  padding:32px;
-  border-radius:26px;
-  width:320px;
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
-  text-align:center;
-}
-.auth-box input{
-  width:100%;padding:12px;
-  border-radius:18px;border:1px solid #ddd;
-  margin-bottom:12px;
-}
-.auth-main{
-  width:100%;padding:12px;
-  border-radius:22px;border:none;
-  background:#f49ac2;color:white;
-  font-weight:600;cursor:pointer;
-}
-.auth-alt{
-  margin-top:10px;
-  background:none;border:none;
-  color:#f49ac2;font-weight:600;
-  cursor:pointer;
-}
-
-/* HEADER */
 header{
-  background:#f4efe5;
-  padding:16px 40px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:relative;
+  background:#f4efe5;padding:16px 20px;
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;
 }
-.logo{font-weight:700;font-size:25px}
+.logo{font-weight:700;font-size:22px}
+#userStats{background:#fff;padding:6px 14px;border-radius:18px;font-size:13px;font-weight:600;box-shadow:0 6px 14px rgba(0,0,0,.12)}
 
-/* USER STATS */
-#userStats{
-  position:absolute;
-  top:88px;right:30px;
-  background:#fff;
-  padding:8px 16px;
-  border-radius:18px;
-  font-size:13px;
-  font-weight:600;
-  box-shadow:0 6px 14px rgba(0,0,0,.12);
-}
-
-/* NAV */
-nav a{
-  margin:0 12px;
-  text-decoration:none;
-  color:#222;
-  font-size:16px;
-  cursor:pointer;
-  opacity:.5;
-}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{text-decoration:none;color:#222;font-size:15px;cursor:pointer;opacity:.5}
 nav a.active{font-weight:700;opacity:1}
 
-/* SEARCH */
 .search-input{
-  width:44px;height:40px;border-radius:20px;border:none;
-  background:#f49ac2;color:white;padding:0 16px;
-  transition:.3s;outline:none
+  width:40px;height:38px;border-radius:20px;border:none;
+  background:#f49ac2;color:white;padding:0 16px;transition:.3s;outline:none
 }
-.search-input.active{width:260px}
+.search-input.active{width:180px}
 .search-input::placeholder{color:#fff}
 
-/* MAIN */
-main{padding:80px 40px;text-align:center}
+main{padding:40px 16px;text-align:center}
+.tab{display:none}.tab.active{display:block}
 
-/* TAB */
-.tab{display:none}
-.tab.active{display:block}
+.home-gif{margin:10px 0 30px;display:flex;justify-content:center}
+.home-gif img{width:70%;max-width:280px}
 
-/* GIF */
-.home-gif{margin:-50px 0 50px;display:flex;justify-content:center}
-.home-gif img{width:280px}
-
-/* SUB TABS */
 .sub-tabs button{
-  margin:8px;
-  padding:10px 20px;
-  border-radius:22px;
-  border:none;
-  cursor:pointer;
-  background:#eee;
-  font-weight:600;
+  margin:6px;padding:8px 16px;border-radius:22px;
+  border:none;cursor:pointer;background:#eee;font-weight:600;
 }
 
-/* FLASHCARD */
 .flashcard{
-  width:440px;min-height:260px;margin:40px auto 20px;
+  width:95%;max-width:440px;min-height:220px;margin:20px auto;
   background:#f49ac2;border-radius:26px;color:white;
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:12px;font-size:28px;
-  cursor:pointer;padding:24px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;font-size:24px;cursor:pointer;padding:20px;
   box-shadow:0 12px 26px rgba(0,0,0,.15);
 }
-.flash-example{font-size:16px;opacity:.9}
+.flash-example{font-size:15px;opacity:.9}
+.flash-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.flash-actions button{padding:8px 18px;border-radius:22px;border:none;font-weight:600;cursor:pointer}
+.skip{background:#ddd}.next{background:#f49ac2;color:white}
 
-/* FLASH BUTTONS */
-.flash-actions{display:flex;justify-content:center;gap:16px}
-.flash-actions button{
-  padding:10px 22px;border-radius:22px;
-  border:none;font-weight:600;cursor:pointer;
-}
-.skip{background:#ddd}
-.next{background:#f49ac2;color:white}
-
-/* GAME */
-.game-card{
-  background:#f1eddc;border-radius:18px;
-  padding:16px;margin:10px auto;
-  max-width:420px;cursor:pointer;
-}
+.game-card{background:#f1eddc;border-radius:18px;padding:14px;margin:8px auto;max-width:420px;cursor:pointer}
 .game-card.correct{background:#b9f6ca}
 .game-card.wrong{background:#ffcdd2}
-.listen-btn{
-  width:60px;height:60px;border-radius:50%;
-  border:none;background:#f49ac2;
-  color:white;font-size:26px;
-  cursor:pointer;margin:20px auto;
-}
+.listen-btn{width:56px;height:56px;border-radius:50%;border:none;background:#f49ac2;color:white;font-size:24px;cursor:pointer;margin:16px auto}
 
-/* DICT */
 .dict-app{max-width:720px;margin:auto;text-align:left}
 .dict-search{
-  width:100%;padding:14px 18px;
-  border-radius:22px;border:none;
-  outline:none;font-size:16px;
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
+  width:100%;padding:12px 16px;border-radius:22px;border:none;
+  outline:none;font-size:16px;box-shadow:0 6px 16px rgba(0,0,0,.1);
 }
-.dict-card{
-  background:#fff;padding:14px;
-  margin:12px 0;border-radius:18px;
-  cursor:pointer;
-}
-.dict-type{
-  font-size:12px;
-  color:#f49ac2;
-  margin-top:4px;
-}
+.dict-card{background:#fff;padding:12px;margin:10px 0;border-radius:18px;cursor:pointer}
+.dict-type{font-size:12px;color:#f49ac2;margin-top:4px}
 .dict-example{font-style:italic;font-size:13px;color:#666}
 .hl-word{color:#f49ac2;font-weight:600}
 
-/* STATS */
-.stats{
-  max-width:420px;margin:40px auto;
-  background:#fff;padding:24px;
-  border-radius:22px;text-align:left;
-}
+.stats{max-width:420px;margin:20px auto;background:#fff;padding:20px;border-radius:22px;text-align:left}
 </style>
 </head>
 
 <body>
-
-<!-- AUTH -->
-<div id="authScreen">
-  <div class="auth-box">
-    <h2>🍡 Marshmallow</h2>
-    <p style="font-size:13px;opacity:.6">Đăng nhập để học</p>
-    <input id="authUser" placeholder="Tên đăng nhập">
-    <input id="authPass" type="password" placeholder="Mật khẩu">
-    <button class="auth-main" onclick="login()">Đăng nhập</button>
-    <button class="auth-alt" onclick="register()">Tạo tài khoản</button>
-    <div id="authMsg" style="font-size:13px;margin-top:10px"></div>
-  </div>
-</div>
 
 <header>
   <div class="logo">🍡 Trần Hiền</div>
@@ -196,15 +80,10 @@ main{padding:80px 40px;text-align:center}
     <a data-tab="food" onclick="showTab('food')">Food</a>
   </nav>
 
-  <div>
-    <input id="searchInput" class="search-input"
+  <input id="searchInput" class="search-input"
       placeholder="🔍︎ Tìm bài viết"
       onfocus="this.classList.add('active')"
       onblur="if(!this.value)this.classList.remove('active')">
-    <button onclick="logout()" style="background:none;border:none;font-weight:600;cursor:pointer">
-      Logout
-    </button>
-  </div>
 
   <div id="userStats">
     ⭐ Level <span id="lv">1</span> · 💎 <span id="score">0</span>
@@ -212,32 +91,17 @@ main{padding:80px 40px;text-align:center}
 </header>
 
 <main>
-<section id="home" class="tab active">
-  <div class="home-gif">
-    <img src="https://media4.giphy.com/media/10a1Cwco2kUtlS/giphy.gif">
-  </div>
-</section>
-
-<section id="journey" class="tab">
-  <div class="home-gif">
-    <img src="https://media0.giphy.com/media/kIRwx1dWD9cnuNe0NB/giphy.gif">
-  </div>
-</section>
-
-<section id="food" class="tab">
-  <div class="home-gif">
-    <img src="https://media3.giphy.com/media/7uLj32hcCziZq2rr5K/giphy.gif">
-  </div>
-</section>
+<section id="home" class="tab active"><div class="home-gif"><img src="https://media4.giphy.com/media/10a1Cwco2kUtlS/giphy.gif"></div></section>
+<section id="journey" class="tab"><div class="home-gif"><img src="https://media0.giphy.com/media/kIRwx1dWD9cnuNe0NB/giphy.gif"></div></section>
+<section id="food" class="tab"><div class="home-gif"><img src="https://media3.giphy.com/media/7uLj32hcCziZq2rr5K/giphy.gif"></div></section>
 
 <section id="english" class="tab">
-  <div class="home-gif">
-    <img src="https://media0.giphy.com/media/HiKpToupuCj9UwQkWP/giphy.gif">
-  </div>
+  <div class="home-gif"><img src="https://media0.giphy.com/media/HiKpToupuCj9UwQkWP/giphy.gif"></div>
   <div class="sub-tabs">
     <button onclick="openFlash()">Flashcard</button>
     <button onclick="openGame()">Game</button>
     <button onclick="openDict()">Dictionary</button>
+    <button onclick="openStructure()">Structure</button>
     <button onclick="openStats()">Stats</button>
   </div>
   <div id="englishContent">✨ Chọn chế độ học</div>
@@ -245,7 +109,6 @@ main{padding:80px 40px;text-align:center}
 </main>
 
 <script>
-/* NAV */
 function showTab(id){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'))
   document.getElementById(id).classList.add('active')
@@ -253,192 +116,113 @@ function showTab(id){
   document.querySelector(`nav a[data-tab="${id}"]`).classList.add('active')
 }
 
-/* AUTH + DATA */
-let currentUser=localStorage.getItem("currentUser")
-let learned={},correct={},score=0
+let learned=JSON.parse(localStorage.getItem("guest_learned")||"{}")
+let correct=JSON.parse(localStorage.getItem("guest_correct")||"{}")
+let score=Number(localStorage.getItem("guest_score")||0)
 
-function login(){
-  const u=authUser.value.trim(),p=authPass.value
-  const users=JSON.parse(localStorage.getItem("users")||"{}")
-  if(!users[u]||users[u]!==p){authMsg.innerText="❌ Sai thông tin";return}
-  localStorage.setItem("currentUser",u)
-  initUser(u)
-}
-function register(){
-  const u=authUser.value.trim(),p=authPass.value
-  if(!u||!p){authMsg.innerText="⚠️ Nhập đủ";return}
-  const users=JSON.parse(localStorage.getItem("users")||"{}")
-  if(users[u]){authMsg.innerText="⚠️ Đã tồn tại";return}
-  users[u]=p
-  localStorage.setItem("users",JSON.stringify(users))
-  authMsg.innerText="✅ Tạo thành công"
-}
-function logout(){
-  localStorage.removeItem("currentUser")
-  location.reload()
-}
-function initUser(u){
-  currentUser=u
-  authScreen.style.display="none"
-  learned=JSON.parse(localStorage.getItem(u+"_learned")||"{}")
-  correct=JSON.parse(localStorage.getItem(u+"_correct")||"{}")
-  score=Number(localStorage.getItem(u+"_score")||0)
-  updateStatsUI()
-}
 function save(){
-  localStorage.setItem(currentUser+"_learned",JSON.stringify(learned))
-  localStorage.setItem(currentUser+"_correct",JSON.stringify(correct))
-  localStorage.setItem(currentUser+"_score",score)
+  localStorage.setItem("guest_learned",JSON.stringify(learned))
+  localStorage.setItem("guest_correct",JSON.stringify(correct))
+  localStorage.setItem("guest_score",score)
   updateStatsUI()
 }
 function updateStatsUI(){
-  score.innerText=score
+  scoreEl.innerText=score
   lv.innerText=Math.floor(score/100)+1
 }
-if(currentUser) initUser(currentUser)
+const scoreEl=document.getElementById("score")
+const lv=document.getElementById("lv")
+updateStatsUI()
 
 /* WORD DATA */
-const URL="https://opensheet.elk.sh/11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8/Sheet1"
+const WORD_URL="https://opensheet.elk.sh/11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8/Sheet1"
 let words=[]
-fetch(URL).then(r=>r.json()).then(d=>words=d)
+fetch(WORD_URL).then(r=>r.json()).then(d=>words=d)
 
-/* FLASH */
+/* STRUCTURE DATA */
+const STRUCT_URL="https://opensheet.elk.sh/11RjgH-4a8mENEkDNTv2UFsRzZGy73JJ9YNXz5HR2Tt8/Sheet2"
+let structures=[]
+fetch(STRUCT_URL).then(r=>r.json()).then(d=>structures=d)
+
+/* FLASHCARD */
 let fi=0,front=true
 function openFlash(){
-  const w=words[fi]
-  englishContent.innerHTML=`
-  <div class="flashcard" onclick="flip()">
-    ${front?w.EN:w.VI}
-    ${!front&&w.Example?`<div class="flash-example">${w.Example}</div>`:""}
-  </div>
-  <div class="flash-actions">
-    <button class="skip" onclick="markKnown()">Đã biết</button>
-    <button class="next" onclick="nextFlash()">Next</button>
-  </div>`
+  const w=words[fi]; if(!w)return
+  englishContent.innerHTML=`<div class="flashcard" onclick="flip()">${front?w.EN:w.VI}${!front&&w.Example?`<div class="flash-example">${w.Example}</div>`:""}</div>
+  <div class="flash-actions"><button class="skip" onclick="markKnown()">Đã biết</button><button class="next" onclick="nextFlash()">Next</button></div>`
   speak(w.EN)
 }
 function flip(){front=!front;openFlash()}
 function nextFlash(){fi=(fi+1)%words.length;front=true;openFlash()}
-function markKnown(){
-  if(!learned[words[fi].EN]){
-    learned[words[fi].EN]=true
-    score+=5
-  }
-  save();nextFlash()
-}
+function markKnown(){if(!learned[words[fi].EN]){learned[words[fi].EN]=true;score+=5}save();nextFlash()}
 
-/* ===== GAME ===== */
+/* GAME */
 let gameIndex=0
-function openGame(){
-  englishContent.innerHTML=`
-    <div class="sub-tabs">
-      <button onclick="gameListen()">🔊 Listen</button>
-      <button onclick="gameType()">✍️ Type</button>
-    </div>
-    <div id="gameArea"></div>`
-  gameListen()
-}
-
-/* GAME LISTEN */
+function openGame(){englishContent.innerHTML=`<div id="gameArea"></div>`;gameListen()}
 function gameListen(){
-  const w=words[gameIndex]
-  if(!w)return
+  const w=words[gameIndex]; if(!w)return
   speak(w.EN)
   const opts=[w.VI]
-  while(opts.length<3){
-    const r=words[Math.random()*words.length|0].VI
-    if(!opts.includes(r))opts.push(r)
-  }
+  while(opts.length<3){let r=words[Math.random()*words.length|0].VI;if(!opts.includes(r))opts.push(r)}
   opts.sort(()=>Math.random()-.5)
-  gameArea.innerHTML=`
-    <button class="listen-btn" onclick="speak('${w.EN}')">🔊</button>
-    ${opts.map(o=>`
-      <div class="game-card" onclick="checkListen(this,'${o}','${w.VI}')">${o}</div>`).join("")}
-    <div id="result"></div>`
+  gameArea.innerHTML=`<button class="listen-btn" onclick="speak('${w.EN}')">🔊</button>
+  ${opts.map(o=>`<div class="game-card" onclick="checkListen(this,'${o}','${w.VI}')">${o}</div>`).join("")}
+  <div id="result"></div>`
 }
 function checkListen(el,c,a){
   document.querySelectorAll('.game-card').forEach(x=>x.onclick=null)
   const ok=c===a
   el.classList.add(ok?'correct':'wrong')
   result.innerText=ok?'✅ Đúng':'❌ Sai'
-  if(ok && !correct[words[gameIndex].EN]){
-    correct[words[gameIndex].EN]=true
-    score+=10
-  }
+  if(ok && !correct[words[gameIndex].EN]){correct[words[gameIndex].EN]=true;score+=10}
   save()
-  setTimeout(()=>{
-    gameIndex=(gameIndex+1)%words.length
-    gameListen()
-  },1000)
+  setTimeout(()=>{gameIndex=(gameIndex+1)%words.length;gameListen()},1000)
 }
 
-/* GAME TYPE */
-function gameType(){
-  const w=words[gameIndex]
-  if(!w)return
-  speak(w.EN)
-  gameArea.innerHTML=`
-    <button class="listen-btn" onclick="speak('${w.EN}')">🔊</button>
-    <input class="dict-search" placeholder="Gõ từ tiếng Anh"
-      onkeydown="if(event.key==='Enter')checkType(this,'${w.EN}')">
-    <div id="result"></div>`
-}
-function checkType(input,a){
-  const ok=input.value.trim().toLowerCase()===a.toLowerCase()
-  result.innerText=ok?'✅ Chính xác':`❌ ${a}`
-  if(ok && !correct[a]){
-    correct[a]=true
-    score+=10
-  }
-  save()
-  setTimeout(()=>{
-    gameIndex=(gameIndex+1)%words.length
-    gameType()
-  },1200)
-}
-
-/* ===== DICTIONARY (ĐÃ SỬA) ===== */
+/* DICTIONARY */
 function openDict(){
-  englishContent.innerHTML=`
-    <div class="dict-app">
-      <input class="dict-search" placeholder="Tìm từ..." oninput="searchDict(this.value)">
-      <div id="dictList"></div>
-    </div>`
+  englishContent.innerHTML=`<div class="dict-app"><input class="dict-search" placeholder="Tìm từ..." oninput="searchDict(this.value)"><div id="dictList"></div></div>`
   renderDict(words,"")
 }
-
-function renderDict(list, key){
+function renderDict(list,key){
   const k=key.toLowerCase()
   dictList.innerHTML=list.map(w=>{
     let ex=w.Example||""
-    if(ex && k){
-      const re=new RegExp(`(${k})`,"gi")
-      ex=ex.replace(re,`<span class="hl-word">$1</span>`)
-    }
-    return`
-      <div class="dict-card" data-en="${encodeURIComponent(w.EN)}">
-        <b>${w.EN}</b> – ${w.VI}
-        ${w.Type?`<div class="dict-type">${w.Type}</div>`:""}
-        <div class="dict-example">${ex}</div>
-      </div>`
+    if(ex && k){ex=ex.replace(new RegExp(`(${k})`,"gi"),`<span class="hl-word">$1</span>`)}
+    return`<div class="dict-card" data-en="${encodeURIComponent(w.EN)}"><b>${w.EN}</b> – ${w.VI}<div class="dict-example">${ex}</div></div>`
   }).join("")
-  document.querySelectorAll('.dict-card').forEach(c=>{
-    c.onclick=()=>speak(decodeURIComponent(c.dataset.en))
-  })
+  document.querySelectorAll('.dict-card').forEach(c=>c.onclick=()=>speak(decodeURIComponent(c.dataset.en)))
 }
-
 function searchDict(k){
   const key=k.toLowerCase()
-  const filtered=words.filter(w=>
-    w.EN.toLowerCase().includes(key)||
-    w.VI.toLowerCase().includes(key))
-  renderDict(filtered,k)
+  renderDict(words.filter(w=>w.EN.toLowerCase().includes(key)||w.VI.toLowerCase().includes(key)),k)
+}
+
+/* STRUCTURE TAB */
+function openStructure(){
+  englishContent.innerHTML=`<div class="dict-app"><input class="dict-search" placeholder="Tìm cấu trúc..." oninput="searchStructure(this.value)"><div id="structList"></div></div>`
+  renderStructure(structures,"")
+}
+function renderStructure(list,key){
+  const k=key.toLowerCase()
+  structList.innerHTML=list.map(s=>{
+    let ex=s.Example||""
+    if(ex && k){ex=ex.replace(new RegExp(`(${k})`,"gi"),`<span class="hl-word">$1</span>`)}
+    return`<div class="dict-card"><b>${s.Structure}</b><div class="dict-type">${s.Description||""}</div><div class="dict-example">${ex}</div></div>`
+  }).join("")
+}
+function searchStructure(k){
+  const key=k.toLowerCase()
+  renderStructure(structures.filter(s=>
+    s.Structure.toLowerCase().includes(key)||
+    (s.Description||"").toLowerCase().includes(key)||
+    (s.Example||"").toLowerCase().includes(key)
+  ),k)
 }
 
 /* STATS */
 function openStats(){
-  englishContent.innerHTML=`
-  <div class="stats">
+  englishContent.innerHTML=`<div class="stats">
     <h3>📊 Thống kê</h3>
     <p>Tổng từ: ${words.length}</p>
     <p>Đã biết: ${Object.keys(learned).length}</p>
@@ -448,7 +232,6 @@ function openStats(){
   </div>`
 }
 
-/* SPEAK */
 function speak(t){
   speechSynthesis.cancel()
   const u=new SpeechSynthesisUtterance(t)
