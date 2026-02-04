@@ -66,6 +66,12 @@ main{padding:40px 16px;text-align:center}
 .hl-word{color:#f49ac2;font-weight:600}
 
 .stats{max-width:420px;margin:20px auto;background:#fff;padding:20px;border-radius:22px;text-align:left}
+  .review-box{max-width:420px;margin:0 auto;background:#fff;padding:16px;border-radius:22px;text-align:left}
+.review-box input,.review-box textarea{
+  width:100%;padding:8px;border-radius:14px;border:1px solid #ddd;margin-bottom:8px
+}
+.review-card{background:#fff;margin:12px auto;padding:14px;border-radius:18px;max-width:420px;box-shadow:0 6px 14px rgba(0,0,0,.1)}
+.review-card img{max-width:100%;border-radius:14px;margin:8px 0}
 </style>
 </head>
 
@@ -104,6 +110,7 @@ main{padding:40px 16px;text-align:center}
     <button onclick="openDict()">Dictionary</button>
     <button onclick="openStructure()">Structure</button>
     <button onclick="openStats()">Stats</button>
+    <button onclick="openReview()">Review</button>
   </div>
   <div id="englishContent">✨ Chọn chế độ học</div>
 </section>
@@ -312,9 +319,57 @@ function speak(t){
   u.lang="en-US"
   speechSynthesis.speak(u)
 }
+  let reviews = JSON.parse(localStorage.getItem("reviews")||"[]")
+
+function openReview(){
+  englishContent.innerHTML=`
+    <div class="review-box">
+      <h3>📝 Tạo Review</h3>
+      <input id="rvTitle" placeholder="Tiêu đề">
+      <textarea id="rvContent" placeholder="Nội dung"></textarea>
+      <input type="file" id="rvImage" accept="image/*">
+      <img id="rvPreview" style="display:none;margin-top:8px">
+      <button class="next" onclick="createReview()">➕ Tạo</button>
+    </div>
+    <div id="reviewList"></div>
+  `
+  renderReviews()
+
+  rvImage.onchange=e=>{
+    const f=e.target.files[0]
+    if(!f) return
+    const r=new FileReader()
+    r.onload=()=>{rvPreview.src=r.result;rvPreview.style.display="block"}
+    r.readAsDataURL(f)
+  }
+}
+
+function createReview(){
+  if(!rvTitle.value||!rvContent.value) return alert("Thiếu nội dung")
+  reviews.unshift({
+    title:rvTitle.value,
+    content:rvContent.value,
+    image:rvPreview.src||"",
+    time:new Date().toLocaleString()
+  })
+  localStorage.setItem("reviews",JSON.stringify(reviews))
+  openReview()
+}
+
+function renderReviews(){
+  reviewList.innerHTML=reviews.map(r=>`
+    <div class="review-card">
+      <b>${r.title}</b>
+      <div style="font-size:12px;opacity:.6">${r.time}</div>
+      ${r.image?`<img src="${r.image}">`:""}
+      <p>${r.content}</p>
+    </div>
+  `).join("")
+}
 </script>
 
 </body>
 </html>
+
 
 
