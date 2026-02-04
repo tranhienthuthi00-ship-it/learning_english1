@@ -100,7 +100,7 @@ main{padding:40px 16px;text-align:center}
   <div class="sub-tabs">
     <button onclick="openFlash()">Flashcard</button>
     <button onclick="openGame()">Game</button>
-    <button onclick="openGame2()">Game 2</button>
+    <button onclick="openExercise()">Exercise</button>
     <button onclick="openDict()">Dictionary</button>
     <button onclick="openStructure()">Structure</button>
     <button onclick="openStats()">Stats</button>
@@ -179,6 +179,68 @@ function checkListen(el,c,a){
   save()
   setTimeout(()=>{gameIndex=(gameIndex+1)%words.length;gameListen()},1000)
 }
+/* EXERCISE - VI → GÕ EN */
+let exIndex = 0
+
+function openExercise(){
+  if(!words.length){
+    englishContent.innerHTML="Đang tải dữ liệu..."
+    return
+  }
+  nextExercise()
+}
+
+function nextExercise(){
+  exIndex = (exIndex + 1) % words.length
+  showExercise()
+}
+
+function showExercise(){
+  const w = words[exIndex]
+  if(!w) return
+
+  englishContent.innerHTML = `
+    <div class="flashcard" style="background:#caffbf;color:#222;cursor:auto">
+      <div style="font-size:15px;opacity:.8">Nhập từ tiếng Anh cho nghĩa:</div>
+      <div style="font-size:26px;font-weight:700">${w.VI}</div>
+      <input id="exInput"
+        placeholder="Type English word..."
+        style="margin-top:12px;padding:8px 14px;border-radius:18px;border:none;font-size:16px;width:80%">
+      <div id="exResult" style="margin-top:10px;font-size:14px"></div>
+    </div>
+
+    <div class="flash-actions">
+      <button class="skip" onclick="nextExercise()">Bỏ qua</button>
+      <button class="next" onclick="checkExerciseAnswer('${w.EN}')">Kiểm tra</button>
+    </div>
+  `
+
+  setTimeout(()=>document.getElementById("exInput").focus(),100)
+}
+
+function checkExerciseAnswer(answer){
+  const input = document.getElementById("exInput").value.trim()
+  const res = document.getElementById("exResult")
+
+  if(!input){
+    res.innerText="Bạn chưa nhập đáp án"
+    return
+  }
+
+  if(input.toLowerCase() === answer.toLowerCase()){
+    res.innerHTML="✅ Chính xác!"
+    if(!correct[answer]){
+      correct[answer] = true
+      learned[answer] = true
+      score += 15
+    }
+    speak(answer)
+    save()
+    setTimeout(nextExercise, 900)
+  }else{
+    res.innerHTML=`❌ Sai rồi. Đáp án: <b>${answer}</b>`
+  }
+}
 
 /* DICTIONARY */
 function openDict(){
@@ -253,3 +315,4 @@ function speak(t){
 
 </body>
 </html>
+
