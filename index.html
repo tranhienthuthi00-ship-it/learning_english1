@@ -238,7 +238,8 @@ function checkExerciseAnswer(answer){
     save()
     setTimeout(nextExercise, 900)
   }else{
-    res.innerHTML=`❌ Sai rồi. Đáp án: <b>${answer}</b>`
+    res.innerHTML=`❌ Sai rồi. Nghe gợi ý nhé 🔊`
+    speak(answer)   // 👉 đọc đáp án khi sai
   }
 }
 
